@@ -27,3 +27,7 @@
 *.exe
 *.out
 *.app
+
+# Users
+CMakeLists.txt.user
+
