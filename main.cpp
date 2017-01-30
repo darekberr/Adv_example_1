@@ -2,7 +2,7 @@
 #include <memory>
 #include <fstream>
 
-using namespace std;
+//using namespace std;
 
 
 //class bar;
@@ -19,30 +19,49 @@ using namespace std;
 
 
 
-int main(int argc, char *argv[])
+int main()
 {
-    cout << "Hello Easter Bunny HQ!" << endl;
+    std::cout << "Hello Easter Bunny HQ!" << std::endl;
 
-    string x;
-    int count_position;
-    count_position = 0;
+    int count_position = 0;
 
 
-    ifstream myPositionsByText;
+    std::ifstream myPositionsByText;
     myPositionsByText.open("01.txt");
-    char outputSteps;
+
+    if(myPositionsByText.fail())
+    {
+        std::cout << "sorry, can't open it" << std::endl;
+        exit(1);
+    }
+
+    std::string outputSteps;
     if(myPositionsByText.is_open())
     {
         while(!myPositionsByText.eof())
         {
             myPositionsByText >> outputSteps;
-            cout << outputSteps;
+            std::cout << outputSteps << std::endl;
+
+            int i;
+            for (i = 0; i < outputSteps.length(); i++)
+            {
+                if(outputSteps[i] == '(')
+                    count_position++;
+                else
+                {
+                    std::cout << outputSteps[i] << std::endl;
+                    count_position--;
+                }
+            }
+
+            std::cout << count_position << std::endl;
         }
     }
+    myPositionsByText.close();
 
-//    fstream fcin;
+
+    std::cout << count_position << std::endl;
 
     return 0;
-//    unsigned a;
-//    unsigned b;
 }
