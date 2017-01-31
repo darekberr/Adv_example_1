@@ -1,27 +1,12 @@
 #include <iostream>
-#include <memory>
 #include <fstream>
-
-//using namespace std;
-
-
-//class bar;
-
-//class foo
-//{
-//public:
-//    foo(const std::shared_ptr<bar>& b)
-//        : forward_reference{b}  { }
-
-//private:
-//    std::shared_ptr<bar> forward_reference;
-//};
+#include <set>
 
 
 
 int main()
 {
-    std::cout << "Hello Easter Bunny HQ!" << std::endl;
+    std::cout << "Hello Easter Bunny HQ!\n\n" << std::endl;
 
     int count_position = 0;
 
@@ -38,30 +23,55 @@ int main()
     std::string outputSteps;
     if(myPositionsByText.is_open())
     {
+
+        std::set<std::pair<int, int>> visited;
+        int  pos[2]{0, 0};
+        char d;
+
+        for (int index{1}, dist; myPositionsByText >> d >> dist; myPositionsByText.ignore(1, ','))
+        {
+            std::cout << "Idx start " << index << "  " <<  d << "  przed  " << dist << std::endl;
+            std::cout << ~d << "  " << ~'P' << std::endl;
+            index += ~d & 3;
+            std::cout << "Idx po kroku  " << index << "  " <<  d << "  " << dist << std::endl;
+            std::cout << "Position before move  " << pos[index & 1] << " " << pos[index & 2]  << std::endl;
+
+            for (int i{0}; i < dist; ++i)
+            {
+              pos[index & 1] += 1 - (index & 2);
+              std::cout << "Position afte move  " << pos[index & 1] << " " << pos[index & 2]  << std::endl;
+
+              if (!visited.emplace(pos[0], pos[1]).second)
+              {
+                std::cout << "Coś się dzieje  " << (std::abs(pos[0]) + std::abs(pos[1])) << std::endl;
+//                return;
+              }
+            }
+        }
+
         while(!myPositionsByText.eof())
         {
-            myPositionsByText >> outputSteps;
+            std::getline(myPositionsByText, outputSteps);
+
+            //myPositionsByText >> outputSteps;
             std::cout << outputSteps << std::endl;
 
-            int i;
-            for (i = 0; i < outputSteps.length(); i++)
-            {
-                if(outputSteps[i] == '(')
-                    count_position++;
-                else
-                {
-                    std::cout << outputSteps[i] << std::endl;
-                    count_position--;
-                }
-            }
 
-            std::cout << count_position << std::endl;
+//            int i;
+//            for (i = 0; i < outputSteps.length(); i++)
+//            {
+//                if(outputSteps[i] == '(')
+//                    count_position++;
+//                else if (outputSteps[i] == ' ' || outputSteps[i] == ',' ) continue;
+//                else
+//                {
+//                    std::cout << outputSteps[i] << std::endl;
+//                    count_position--;
+//                }
+//            }
         }
+        myPositionsByText.close();
     }
-    myPositionsByText.close();
-
-
-    std::cout << count_position << std::endl;
 
     return 0;
 }
