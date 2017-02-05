@@ -19,11 +19,6 @@ int main()
         exit(1);
     }
 
-    //Oversee initialization
-    PositionFinder goForward {};
-    std::vector<std::pair<int, int> >  middleStep;
-    middleStep = goForward.getPosiotion();
-
 
     if(myPositionsByText.is_open())
     {
@@ -44,27 +39,6 @@ int main()
 //    std::cout << std::get<0>(step33[0]) << " " << std::get<1>(step33[0]) << std::endl;
 //    std::cout << "The shortest distance is:  " << goForward33.getShortestDistance() << std::endl;
 //    myPositionsByText.close();
-
-//    std::string outputSteps;
-//    if(myPositionsByText.is_open())
-//    {
-//        int  pos[2]{0, 0};
-//        char rotation;
-
-//        for (int index{1}, dist; myPositionsByText >> rotation >> dist; myPositionsByText.ignore(1, ','))
-//        {
-//                std::cout << "Idx start " << index << "  " <<  rotation << "  przed  " << dist << std::endl;
-//            index += ~rotation & 3;
-//                std::cout << "Idx po kroku  " << index << std::endl;
-//            std::cout << "Position Before move  " << pos[0] << " " << pos[1]  << std::endl;
-
-//            for (int step{0}; step < dist; ++step)
-//            {
-//              pos[index & 1] += 1 - (index & 2);
-//            }
-//            std::cout << "Position After move  " << pos[0] << " " << pos[1]  << std::endl;
-//            std::cout << (std::abs(pos[0]) + std::abs(pos[1])) << std::endl;
-//        }
 
     return 0;
 }

@@ -83,7 +83,7 @@ void PositionFinder::stepEast(Directions, const int move[], const int &dist)
 {
 //    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
 //              << "   DIST: " << dist << std::endl;
-    std::pair<int, int> pairEast {std::make_pair(move[0], move[1]*dist)};
+    std::pair<int, int> pairEast {std::make_pair(move[0]*dist, move[1])};
 
     std::get<0>(m_coordinate[0]) += pairEast.first;
     std::get<1>(m_coordinate[0]) += pairEast.second;

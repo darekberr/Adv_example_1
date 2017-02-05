@@ -32,6 +32,7 @@ int main()
         {
             std::cout << "Rotation:  " <<  rotation << "  przed  " << dist << std::endl;
             goForward.moveToPosition(rotation, dist);
+//            goForward.getShortestDistance();
         }
         goForward.getShortestDistance();
     }
@@ -45,6 +46,8 @@ int main()
 //    std::cout << "The shortest distance is:  " << goForward33.getShortestDistance() << std::endl;
 //    myPositionsByText.close();
 
+
+//  Second solution with indexes!
 //    std::string outputSteps;
 //    if(myPositionsByText.is_open())
 //    {
@@ -65,6 +68,8 @@ int main()
 //            std::cout << "Position After move  " << pos[0] << " " << pos[1]  << std::endl;
 //            std::cout << (std::abs(pos[0]) + std::abs(pos[1])) << std::endl;
 //        }
+//    }
+//    myPositionsByText.close();
 
     return 0;
 }
