@@ -1,5 +1,8 @@
 #include <iostream>
+//#include <vector>
+#include <algorithm>
 #include <utility>
+#include <functional>
 #include "positionfinder.hpp"
 
 
@@ -8,9 +11,39 @@ PositionFinder::PositionFinder()
 {}
 
 
-void PositionFinder::holdPosition(std::vector<std::pair<int, int>> new_position)
+void PositionFinder::holdPosition(const std::pair<int, int> & new_pairPosition)
 {
-    m_coordinate = new_position;
+    typedef std::vector<std::pair<int,int>> VectorOfPair;
+    typedef std::pair<int,int> Pair;
+
+    Pair tempPair;
+    tempPair = tempPair + new_pairPosition;
+    std::cout << "Starting _temp pair is:  " << tempPair.first << " " << tempPair.second << std::endl;
+
+    VectorOfPair tempCoordinate; tempCoordinate.push_back(tempPair);
+
+    auto backIt = m_coordinate.end()-1;
+    tempPair = std::make_pair(backIt->first + tempPair.first, backIt->second + tempPair.second);
+    std::cout << "Latest pair _temp pair is:  " << tempPair.first << " " << tempPair.second << std::endl;
+
+//    for (auto it = m_coordinate.rbegin(); it != m_coordinate.rend(); it++ )
+//    {
+//        std::cout << "Position moved to coordinate:  "
+//                  << it->first << "  " << it->second << std::endl;
+//    }
+    auto visitedPosition = std::find(m_coordinate.begin(), m_coordinate.end(), tempPair);
+    if( visitedPosition != m_coordinate.end())
+    {
+        std::cout << "I got it!  " << visitedPosition->first << " " << visitedPosition->second
+                  << "\n  and the shortest distance from block is  "
+                  << std::abs(visitedPosition->first) + std::abs(visitedPosition->second) << std::endl;
+
+//    getShortestDistance();
+    }
+
+    m_coordinate.push_back(tempPair);
+//    auto back_it = m_coordinate.end()-1;
+//    std::cout << "Only last element:  " << back_it->first << " " << back_it->second << std::endl;
 }
 
 int PositionFinder::moveToPosition(const char directionNext, const int& step)
@@ -74,63 +107,64 @@ std::vector<std::pair<int, int>> PositionFinder::getPosiotion()
 int PositionFinder::getShortestDistance()
 {
     std::cout << "Shortest distance: ";
-    std::cout << std::abs(std::get<0>(m_coordinate[0])) + std::abs(std::get<1>(m_coordinate[0])) << std::endl;
-    return std::abs(std::get<0>(m_coordinate[0])) + std::abs(std::get<1>(m_coordinate[0]));
+    auto back_it = m_coordinate.end()-1;
+    std::cout << std::abs(back_it->first) + std::abs(back_it->second) << std::endl;
+    return std::abs(back_it->first) + std::abs(back_it->second);
+//    std::cout << std::abs(std::get<0>(m_coordinate[0])) + std::abs(std::get<1>(m_coordinate[0])) << std::endl;
+//    return std::abs(std::get<0>(m_coordinate[0])) + std::abs(std::get<1>(m_coordinate[0]));
 }
 
 
 void PositionFinder::stepEast(Directions, const int move[], const int &dist)
 {
-//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-//              << "   DIST: " << dist << std::endl;
-    std::pair<int, int> pairEast {std::make_pair(move[0], move[1]*dist)};
+    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+              << "   DIST: " << dist << std::endl;
+    std::pair<int, int> pairEast {std::make_pair(move[0]*dist, move[1]) };
 
-    std::get<0>(m_coordinate[0]) += pairEast.first;
-    std::get<1>(m_coordinate[0]) += pairEast.second;
+    holdPosition(pairEast);
 
-    std::cout << "Position moved to coordinate:  "
-              << std::get<0>(m_coordinate[0])
-              << "  " << std::get<1>(m_coordinate[0]) << std::endl;
+//    for (auto it = m_coordinate.rbegin(); it != m_coordinate.rend(); it++ )
+//    {
+//        std::cout << "Position moved to coordinate EAST:  "
+//                  << it->first << "  " << it->second << std::endl;
+//    }
+    auto back_it = m_coordinate.end()-1;
+    std::cout << "Only last element (EAST):  " << back_it->first << " " << back_it->second << std::endl;
 }
 
 void PositionFinder::stepNorth(Directions, const int move[], const int& dist)
 {
-//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-//                  << "   DIST: " << dist << std::endl;
+    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+                  << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairNorth {std::make_pair(move[0], move[1]*dist)};
 
-    std::get<0>(m_coordinate[0]) += pairNorth.first;
-    std::get<1>(m_coordinate[0]) += pairNorth.second;
+    holdPosition(pairNorth);
 
-    std::cout << "Position moved to coordinate:  "
-              << std::get<0>(m_coordinate[0])
-              << "  " << std::get<1>(m_coordinate[0]) << std::endl;
+    auto back_it = m_coordinate.end()-1;
+    std::cout << "Only last element(NORTH):  " << back_it->first << " " << back_it->second << std::endl;
+
 }
 
 void PositionFinder::stepSouth(Directions, const int move[], const int& dist)
 {
-//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-//                  << "   DIST: " << dist << std::endl;
+    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+                  << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairSouth {std::make_pair(move[0], move[1]*dist)};
 
-    std::get<0>(m_coordinate[0]) += pairSouth.first;
-    std::get<1>(m_coordinate[0]) += pairSouth.second;
+    holdPosition(pairSouth);
 
-    std::cout << "Position moved to coordinate:  "
-              << std::get<0>(m_coordinate[0])
-              << "  " << std::get<1>(m_coordinate[0]) << std::endl;
+    auto back_it = m_coordinate.end()-1;
+    std::cout << "Only last element(SOUTH):  " << back_it->first << " " << back_it->second << std::endl;
 }
 
 void PositionFinder::stepWest(Directions, const int move[], const int& dist)
 {
-//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-//              << "   DIST: " << dist << std::endl;
+    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+              << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairWest {std::make_pair(move[0]*dist, move[1])};
 
-    std::get<0>(m_coordinate[0]) += pairWest.first;
-    std::get<1>(m_coordinate[0]) += pairWest.second;
+    holdPosition(pairWest);
 
-    std::cout << "Position moved to coordinate:  "
-              << std::get<0>(m_coordinate[0])
-              << "  " << std::get<1>(m_coordinate[0]) << std::endl;
+    auto back_it = m_coordinate.end()-1;
+    std::cout << "Only last element(WEST):  " << back_it->first << " " << back_it->second << std::endl;
 }

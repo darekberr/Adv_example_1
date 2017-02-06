@@ -11,7 +11,7 @@ int main()
 
 
     std::ifstream myPositionsByText;
-    myPositionsByText.open("01.txt");
+    myPositionsByText.open("01_oryginal.txt");
 
     if(myPositionsByText.fail())
     {
@@ -19,6 +19,7 @@ int main()
         exit(1);
     }
 
+    PositionFinder goForward {};
 
     if(myPositionsByText.is_open())
     {
