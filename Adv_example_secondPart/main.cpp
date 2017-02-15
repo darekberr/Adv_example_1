@@ -12,6 +12,7 @@ int main()
 
     std::ifstream myPositionsByText;
     myPositionsByText.open("01_oryginal.txt");
+//    myPositionsByText.open("02.txt");
 
     if(myPositionsByText.fail())
     {
@@ -26,7 +27,7 @@ int main()
         char rotation;
         for (int dist; myPositionsByText >> rotation >> dist; myPositionsByText.ignore(1, ','))
         {
-            std::cout << "Rotation:  " <<  rotation << "  przed  " << dist << std::endl;
+//            std::cout << "Rotation:  " <<  rotation << "  przed  " << dist << std::endl;
             goForward.moveToPosition(rotation, dist);
         }
         goForward.getShortestDistance();

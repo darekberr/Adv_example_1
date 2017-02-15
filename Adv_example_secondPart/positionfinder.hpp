@@ -1,13 +1,12 @@
 #pragma once
 #include <vector>
+#include <tuple>
 
 
 class PositionFinder
 {
 public:
     PositionFinder();
-//    void holdposition(const int &a, const int &b);
-//    void holdPosition(const std::pair<int, int> &new_pairPosition);
     int moveToPosition(const char directionNext, const int &);
     std::vector<std::pair<int, int>> getPosiotion();
     int getShortestDistance();
@@ -21,15 +20,28 @@ private:
         WEST
     };
 
+    typedef struct StepPosition
+    {
+        int xPos;
+        int yPos;
+
+        bool operator==(const StepPosition & point)
+        {
+                    return std::tie(xPos, yPos) == std::tie(point.xPos, point.yPos);
+        }
+    } SingleStep;
+
     void stepEast (Directions, const int move[], const int& dist);
     void stepNorth (Directions, const int move[], const int& dist);
     void stepSouth (Directions, const int move[], const int& dist);
     void stepWest (Directions, const int move[], const int& dist);
     void holdPosition(const std::pair<int, int> &new_pairPosition);
+    void moveOneStepAndValidate(const int& l_x, const int& l_y);
 
     std::vector<std::pair<int, int>> m_coordinate;
-
     Directions m_direction;
+    SingleStep m_visited;
+    std::vector<SingleStep> m_allSteps;
 };
 
 

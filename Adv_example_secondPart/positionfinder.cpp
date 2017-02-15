@@ -7,7 +7,7 @@
 
 
 PositionFinder::PositionFinder()
-    : m_coordinate {std::make_pair(0, 0)}, m_direction{Directions::NORTH}
+    : m_coordinate {std::make_pair(0, 0)}, m_direction{Directions::NORTH}, m_visited {0, 0}, m_allSteps{0}
 {}
 
 
@@ -18,32 +18,21 @@ void PositionFinder::holdPosition(const std::pair<int, int> & new_pairPosition)
 
     Pair tempPair;
     tempPair = tempPair + new_pairPosition;
-    std::cout << "Starting _temp pair is:  " << tempPair.first << " " << tempPair.second << std::endl;
+//    std::cout << "Starting _temp pair is:  " << tempPair.first << " " << tempPair.second << std::endl;
 
     VectorOfPair tempCoordinate; tempCoordinate.push_back(tempPair);
 
     auto backIt = m_coordinate.end()-1;
     tempPair = std::make_pair(backIt->first + tempPair.first, backIt->second + tempPair.second);
-    std::cout << "Latest pair _temp pair is:  " << tempPair.first << " " << tempPair.second << std::endl;
+//    std::cout << "Latest pair _temp pair is:  " << tempPair.first << " " << tempPair.second << std::endl;
 
-//    for (auto it = m_coordinate.rbegin(); it != m_coordinate.rend(); it++ )
-//    {
-//        std::cout << "Position moved to coordinate:  "
-//                  << it->first << "  " << it->second << std::endl;
-//    }
-    auto visitedPosition = std::find(m_coordinate.begin(), m_coordinate.end(), tempPair);
-    if( visitedPosition != m_coordinate.end())
-    {
-        std::cout << "I got it!  " << visitedPosition->first << " " << visitedPosition->second
-                  << "\n  and the shortest distance from block is  "
-                  << std::abs(visitedPosition->first) + std::abs(visitedPosition->second) << std::endl;
+    typedef std::vector<SingleStep>::iterator ITER;
+    ITER itMsteps (m_allSteps.begin()), itMstepsEnd(m_allSteps.end()-1);
 
-//    getShortestDistance();
-    }
 
     m_coordinate.push_back(tempPair);
 //    auto back_it = m_coordinate.end()-1;
-//    std::cout << "Only last element:  " << back_it->first << " " << back_it->second << std::endl;
+//    std::cout << "Only last element m_coordinate:  " << back_it->first << " " << back_it->second << std::endl;
 }
 
 int PositionFinder::moveToPosition(const char directionNext, const int& step)
@@ -115,56 +104,105 @@ int PositionFinder::getShortestDistance()
 }
 
 
+void PositionFinder::moveOneStepAndValidate(const int& l_x, const int& l_y)
+//void PositionFinder::moveOneStepAndValidate()
+{
+//    typedef std::vector<SingleStep>::iterator ITER;
+    SingleStep pointed;
+    pointed.xPos = l_x; pointed.yPos = l_y;
+    m_allSteps.push_back(pointed);
+
+//    ITER itMsteps (m_allSteps.begin()), itMstepsEnd(m_allSteps.end()-1);
+
+//  Print all members of struct
+//    for ( ; itMsteps !=itMstepsEnd; itMsteps++)
+//    {
+//        std::cout << "Member of struct  " << itMsteps->xPos << "  " << itMsteps->yPos << std::endl;
+//    }
+
+
+    auto visitedPosition = std::find(m_allSteps.begin(), m_allSteps.end()-1, pointed);
+
+    if( visitedPosition != m_allSteps.end()-1)
+    {
+        std::cout << "\tI got it!  " << visitedPosition->xPos << " " << visitedPosition->yPos
+                  << "\n\t  and the shortest distance from block is  "
+                  << std::abs(visitedPosition->xPos) + std::abs(visitedPosition->yPos)
+                  << "\n\tAnd the m_allSteps are:  " << (m_allSteps.end()-1)->xPos << "  " << (m_allSteps.end()-1)->yPos << std::endl;
+    }
+
+}
+
 void PositionFinder::stepEast(Directions, const int move[], const int &dist)
 {
-    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-              << "   DIST: " << dist << std::endl;
+//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+//              << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairEast {std::make_pair(move[0]*dist, move[1]) };
 
-    holdPosition(pairEast);
+    for(auto step = 0; step < dist; ++step)
+    {
+        m_visited.xPos += 1;
+        moveOneStepAndValidate( m_visited.xPos, m_visited.yPos);
+        std::cout << "Kolejne kroki na EAST:  " << m_visited.xPos << "  " << m_visited.yPos << std::endl;
+    }
 
-//    for (auto it = m_coordinate.rbegin(); it != m_coordinate.rend(); it++ )
-//    {
-//        std::cout << "Position moved to coordinate EAST:  "
-//                  << it->first << "  " << it->second << std::endl;
-//    }
-    auto back_it = m_coordinate.end()-1;
-    std::cout << "Only last element (EAST):  " << back_it->first << " " << back_it->second << std::endl;
+    holdPosition(pairEast);
 }
 
 void PositionFinder::stepNorth(Directions, const int move[], const int& dist)
 {
-    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-                  << "   DIST: " << dist << std::endl;
+//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+//                  << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairNorth {std::make_pair(move[0], move[1]*dist)};
+
+    for(auto step = 0; step < dist; ++step)
+    {
+        m_visited.yPos += 1;
+        moveOneStepAndValidate( m_visited.xPos, m_visited.yPos);
+        std::cout << "Kolejne kroki na NORTH:  " << m_visited.xPos << "  " << m_visited.yPos << std::endl;
+    }
 
     holdPosition(pairNorth);
 
-    auto back_it = m_coordinate.end()-1;
-    std::cout << "Only last element(NORTH):  " << back_it->first << " " << back_it->second << std::endl;
-
+//    auto back_it = m_coordinate.end()-1;
+//    std::cout << "Only last element(NORTH):  " << back_it->first << " " << back_it->second << std::endl;
 }
 
 void PositionFinder::stepSouth(Directions, const int move[], const int& dist)
 {
-    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-                  << "   DIST: " << dist << std::endl;
+//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+//                  << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairSouth {std::make_pair(move[0], move[1]*dist)};
+
+
+    for(auto step = 0; step < dist; ++step)
+    {
+        m_visited.yPos -= 1;
+        moveOneStepAndValidate( m_visited.xPos, m_visited.yPos);
+        std::cout << "Kolejne kroki na SOUTH:  " << m_visited.xPos << "  " << m_visited.yPos << std::endl;
+    }
 
     holdPosition(pairSouth);
 
-    auto back_it = m_coordinate.end()-1;
-    std::cout << "Only last element(SOUTH):  " << back_it->first << " " << back_it->second << std::endl;
+//    auto back_it = m_coordinate.end()-1;
+//    std::cout << "Only last element(SOUTH):  " << back_it->first << " " << back_it->second << std::endl;
 }
 
 void PositionFinder::stepWest(Directions, const int move[], const int& dist)
 {
-    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
-              << "   DIST: " << dist << std::endl;
+//    std::cout << "Instruction(s):  " << as_integer(m_direction) << "  MOVE: " << move[0] << "  " << move[1]
+//              << "   DIST: " << dist << std::endl;
     std::pair<int, int> pairWest {std::make_pair(move[0]*dist, move[1])};
+
+    for(auto step = 0; step < dist; ++step)
+    {
+        m_visited.xPos -= 1;
+        moveOneStepAndValidate( m_visited.xPos, m_visited.yPos);
+        std::cout << "Kolejne kroki na WEST:  " << m_visited.xPos << "  " << m_visited.yPos << std::endl;
+    }
 
     holdPosition(pairWest);
 
-    auto back_it = m_coordinate.end()-1;
-    std::cout << "Only last element(WEST):  " << back_it->first << " " << back_it->second << std::endl;
+//    auto back_it = m_coordinate.end()-1;
+//    std::cout << "Only last element(WEST):  " << back_it->first << " " << back_it->second << std::endl;
 }
