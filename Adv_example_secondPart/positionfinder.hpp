@@ -37,6 +37,7 @@ private:
     void stepWest (Directions, const int move[], const int& dist);
     void holdPosition(const std::pair<int, int> &new_pairPosition);
     void moveOneStepAndValidate(const int& l_x, const int& l_y);
+    void printAllMembersOfSteps();
 
     std::vector<std::pair<int, int>> m_coordinate;
     Directions m_direction;
